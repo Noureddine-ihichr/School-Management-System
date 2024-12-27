@@ -17,5 +17,11 @@ class UserSeeder extends Seeder
             'password' => Hash::make('admin123'), // Default password
             'role' => 'admin', // Ensure role field exists in your migration
         ]);
+        User::create([
+            'name' => 'Student User',
+            'email' => 'student@gmail.com',
+            'password' => Hash::make('student1'), // Default password
+            'role' => 'student', // Ensure role field exists in your migration
+        ]);
     }
 }
