@@ -25,6 +25,10 @@
     </style>
 </head>
 <body class="bg-gray-50 bg-pattern min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+    <a href="/" class="absolute top-4 left-4 flex items-center text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+        <i class="fas fa-arrow-left mr-2"></i>
+        <span class="font-medium">Back to Home</span>
+    </a>
     <!-- Decorative blobs -->
     <div class="absolute top-0 left-0 w-72 h-72 shape-blob opacity-70 -z-10"></div>
     <div class="absolute bottom-0 right-0 w-72 h-72 shape-blob opacity-70 -z-10"></div>
