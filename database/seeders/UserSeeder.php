@@ -10,18 +10,13 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Create a default admin account
+        // Create a default Super admin account
         User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin123'), // Default password
-            'role' => 'admin', // Ensure role field exists in your migration
+            'name' => 'Super Admin',
+            'email' => 'superadmin@example.com',
+            'password' => Hash::make('password'), // Default password
+            'role' => 'super_admin', // Set role to 'super_admin'
         ]);
-        User::create([
-            'name' => 'Student User',
-            'email' => 'student@gmail.com',
-            'password' => Hash::make('student1'), // Default password
-            'role' => 'student', // Ensure role field exists in your migration
-        ]);
+
     }
 }

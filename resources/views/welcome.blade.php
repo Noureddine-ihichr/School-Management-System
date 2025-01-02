@@ -106,7 +106,7 @@
                     <a href="#about" class="px-4 py-2 text-indigo-600 hover:text-indigo-800">About</a>
                     <a href="#features" class="px-4 py-2 text-indigo-600 hover:text-indigo-800">Features</a>
                     <a href="#contact" class="px-4 py-2 text-indigo-600 hover:text-indigo-800">Contact</a>
-                    <a href="/login" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg hover:shadow-xl">
+                    <a href="{{route('login')}}" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg hover:shadow-xl">
                         Login
                     </a>
                 </div>

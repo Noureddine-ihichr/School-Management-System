@@ -9,12 +9,14 @@ class AdminAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = \App\Models\User::find(session('user_id'));
+        // Use auth()->user() to get the authenticated user
+        $user = auth()->user();
 
-        if (!$user || $user->role !== 'admin') {
-            return redirect('/login');
+        // Check if the user exists and is authorized (super_admin or admin)
+        if (!$user || ($user->role !== 'admin' && $user->role !== 'super_admin')) {
+            return redirect('/login'); // Redirect unauthorized users to login
         }
 
-        return $next($request);
+        return $next($request); // Allow the request to continue
     }
 }

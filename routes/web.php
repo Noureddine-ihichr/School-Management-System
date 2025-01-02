@@ -6,6 +6,8 @@ use App\Http\Middleware\AdminAuth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\StudentAuth;
 use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\AdminController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +28,13 @@ Route::middleware(AdminAuth::class)->group(function () {
 });
 
 
-Route::middleware(StudentAuth::class)->group(function () {
-    Route::get('/student/dashboard', [StudentAuthController::class, 'dashboard'])->name('dashboard.student');
-});
+//admin management
+Route::get('/admin-management', [AdminController::class, 'index'])->name('admin.management');
+Route::get('/admin-management/create', [AdminController::class, 'create'])->name('admin.create');
+Route::post('/admin-management', [AdminController::class, 'store'])->name('admin.store');
+
+
+
+// Route::middleware(StudentAuth::class)->group(function () {
+//     Route::get('/student/dashboard', [StudentAuthController::class, 'dashboard'])->name('dashboard.student');
+// });
