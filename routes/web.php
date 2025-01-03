@@ -32,6 +32,10 @@ Route::middleware(AdminAuth::class)->group(function () {
 Route::get('/admin-management', [AdminController::class, 'index'])->name('admin.management');
 Route::get('/admin-management/create', [AdminController::class, 'create'])->name('admin.create');
 Route::post('/admin-management', [AdminController::class, 'store'])->name('admin.store');
+Route::get('/admin-management/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+Route::put('/admin-management/{id}', [AdminController::class, 'update'])->name('admin.update');
+Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
+
 
 
 
