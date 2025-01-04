@@ -36,9 +36,9 @@ class AuthController extends Controller
                 return redirect()->route('dashboard.admin');
             }
     
-            if ($user->role === 'student') {
+            if ($user->role === 'teacher') {
                 // Redirect students to their dashboard
-                return redirect()->route('dashboard.student');
+                return redirect()->route('dashboard.teacher');
             }
     
             // (Add other roles later, e.g., teacher)
@@ -46,7 +46,10 @@ class AuthController extends Controller
         }
     
         // If authentication fails, redirect back with an error
-        return back()->withErrors(['login' => 'Invalid email or password']);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+            'password' => 'The provided credentials do not match our records.',
+        ]);
     }
     
 

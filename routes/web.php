@@ -5,8 +5,28 @@ use App\Http\Controllers\AuthController;
 use App\Http\Middleware\AdminAuth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\StudentAuth;
-use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\TeacherDashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ClassController;
+use App\Http\Controllers\AbsenceController;
+use App\Http\Controllers\TimetableController;
+
+// Teacher Routes
+Route::resource('teachers', TeacherController::class);
+
+// Student Routes
+Route::resource('students', StudentController::class);
+
+// Class Routes
+Route::resource('classes', ClassController::class);
+
+// Absence Routes
+Route::resource('absences', AbsenceController::class);
+
+// Timetable Routes
+Route::resource('timetables', TimetableController::class);
 
 
 Route::get('/', function () {
@@ -25,6 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('dashboard.admin');
+    
 });
 
 
@@ -37,8 +58,13 @@ Route::put('/admin-management/{id}', [AdminController::class, 'update'])->name('
 Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
 
 
-
-
+// Teacher Dashboard Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard.teacher');
+    Route::get('/teacher/profile', [TeacherDashboardController::class, 'profile'])->name('teacher.profile');
+    Route::get('/teacher/classes', [TeacherDashboardController::class, 'classes'])->name('teacher.classes');
+    Route::get('/teacher/schedule', [TeacherDashboardController::class, 'schedule'])->name('teacher.schedule');
+});
 // Route::middleware(StudentAuth::class)->group(function () {
 //     Route::get('/student/dashboard', [StudentAuthController::class, 'dashboard'])->name('dashboard.student');
 // });
