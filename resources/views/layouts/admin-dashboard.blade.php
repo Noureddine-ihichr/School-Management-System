@@ -147,9 +147,11 @@
     </div>
 
     <!-- Main Content -->
-    <div class="p-4 sm:ml-64">
-       @yield('content')
-    </div>
+    <main class="sm:ml-64">
+        <div class="p-4 max-w-full">
+            @yield('content')
+        </div>
+    </main>
 
     <script>
         function toggleSidebar() {

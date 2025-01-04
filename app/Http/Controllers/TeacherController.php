@@ -22,7 +22,6 @@ class TeacherController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
@@ -41,7 +40,6 @@ class TeacherController extends Controller
             'user_id' => $user->id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'subject' => $request->subject,
             'phone_number' => $request->phone_number,
         ]);
 
@@ -74,7 +72,6 @@ class TeacherController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email,' . $teacher->user_id,
             'password' => 'nullable|min:8|confirmed',
@@ -97,7 +94,6 @@ class TeacherController extends Controller
         $teacher->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'subject' => $request->subject,
             'phone_number' => $request->phone_number,
         ]);
 
