@@ -14,20 +14,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\TimetableController;
 
-// Teacher Routes
-Route::resource('teachers', TeacherController::class);
 
-// Student Routes
-Route::resource('students', StudentController::class);
-
-// Class Routes
-Route::resource('classes', ClassController::class);
-
-// Absence Routes
-Route::resource('absences', AbsenceController::class);
-
-// Timetable Routes
-Route::resource('timetables', TimetableController::class);
 
 
 Route::get('/', function () {
@@ -76,12 +63,35 @@ Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->na
 
 
 
+//routes for sections 
 
-//Student Dashboard Routes
-Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
-Route::post('/students', [StudentController::class, 'store'])->name('students.store');
-Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
-Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
-Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
-Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+//admin mangment Routes
+
+// Teacher Routes
+Route::resource('teachers', TeacherController::class);
+
+// Student Routes
+Route::resource('students', StudentController::class);
+
+// 
+
+
+// //Student Dashboard Routes
+// Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+// Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+// Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+// Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+// Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+// Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
+// Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+
+
+// Class Routes
+// Route::resource('classes', ClassController::class);
+
+// // Absence Routes
+// Route::resource('absences', AbsenceController::class);
+
+// // Timetable Routes
+// Route::resource('timetables', TimetableController::class);

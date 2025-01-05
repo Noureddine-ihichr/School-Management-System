@@ -1,5 +1,35 @@
 @extends('layouts.admin-dashboard')
 
+<!-- Alert Messages -->
+@if(session('success') || session('error'))
+    <div class="alert-container mb-4"
+         x-data="{ show: true }"
+         x-show="show"
+         x-init="setTimeout(() => show = false, 3000)"
+         :class="{ 'alert-enter': show, 'alert-leave': !show }">
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-r shadow-lg">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="font-medium">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r shadow-lg">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="font-medium">{{ session('error') }}</p>
+                </div>
+            </div>
+        @endif
+    </div>
+@endif
+
 @section('content')
     <div class="w-full">
         <div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg shadow-lg p-6">
