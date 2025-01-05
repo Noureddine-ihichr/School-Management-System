@@ -9,6 +9,7 @@ use App\Http\Controllers\TeacherDashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\TimetableController;
@@ -41,13 +42,29 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-//admin dashboard routes
+//Middleware dashboard routes
 
-Route::middleware(AdminAuth::class)->group(function () {
+//admin dashboard
+Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('dashboard.admin');
     
 });
 
+//student dashboard
+Route::middleware('student')->group(function () {
+    Route::get('/student/dashboard', [StudentDashboardController::class, 'dashboard'])->name('dashboard.student');
+});
+
+// Teacher Dashboard
+Route::middleware('teacher')->group(function () {
+    Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard.teacher');
+    Route::get('/teacher/profile', [TeacherDashboardController::class, 'profile'])->name('teacher.profile');
+    Route::get('/teacher/classes', [TeacherDashboardController::class, 'classes'])->name('teacher.classes');
+    Route::get('/teacher/schedule', [TeacherDashboardController::class, 'schedule'])->name('teacher.schedule');
+});
+
+
+//
 
 //admin management
 Route::get('/admin-management', [AdminController::class, 'index'])->name('admin.management');
@@ -58,13 +75,13 @@ Route::put('/admin-management/{id}', [AdminController::class, 'update'])->name('
 Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
 
 
-// Teacher Dashboard Routes
-Route::middleware('auth')->group(function () {
-    Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard.teacher');
-    Route::get('/teacher/profile', [TeacherDashboardController::class, 'profile'])->name('teacher.profile');
-    Route::get('/teacher/classes', [TeacherDashboardController::class, 'classes'])->name('teacher.classes');
-    Route::get('/teacher/schedule', [TeacherDashboardController::class, 'schedule'])->name('teacher.schedule');
-});
-// Route::middleware(StudentAuth::class)->group(function () {
-//     Route::get('/student/dashboard', [StudentAuthController::class, 'dashboard'])->name('dashboard.student');
-// });
+
+
+//Student Dashboard Routes
+Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
+Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');

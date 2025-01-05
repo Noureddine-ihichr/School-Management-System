@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Scholify</title>
+    <title>Student Dashboard - Scholify</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Alert Animations */
         @keyframes slideInDown {
             from {
                 transform: translateY(-100%);
@@ -39,7 +38,6 @@
             animation: slideOutUp 0.5s ease-in forwards;
         }
         
-        /* Transition Classes */
         .transition-transform {
             transition-property: transform;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -52,7 +50,6 @@
             transition-duration: 300ms;
         }
         
-        /* Alert Container */
         .alert-container {
             position: fixed;
             top: 1rem;
@@ -84,36 +81,15 @@
             </div>
             <ul class="space-y-2 font-medium">
                 <li>
-                    <a href="{{ route('dashboard.admin') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                        <i class="fas fa-chart-line w-5 h-5 text-indigo-500 transition duration-75"></i>
+                    <a href="{{ route('dashboard.student') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
+                        <i class="fas fa-home w-5 h-5 text-indigo-500 transition duration-75"></i>
                         <span class="ml-3">Dashboard</span>
-                    </a>
-                </li>
-                @if (auth()->check() && auth()->user()->role === 'super_admin')
-                    <li>
-                        <a href="{{ route('admin.management') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                            <i class="fas fa-users-cog w-5 h-5 text-indigo-500 transition duration-75"></i>
-                            <span class="ml-3">Admin Management</span>
-                        </a>
-                    </li>
-                @endif
-
-                <li>
-                    <a href="{{ route('students.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                        <i class="fas fa-users w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Students</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('teachers.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                        <i class="fas fa-chalkboard-teacher w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Teachers</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
                         <i class="fas fa-book w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Courses</span>
+                        <span class="ml-3">My Courses</span>
                     </a>
                 </li>
                 <li>
@@ -124,8 +100,14 @@
                 </li>
                 <li>
                     <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                        <i class="fas fa-cog w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Settings</span>
+                        <i class="fas fa-chart-line w-5 h-5 text-indigo-500 transition duration-75"></i>
+                        <span class="ml-3">Grades</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
+                        <i class="fas fa-user w-5 h-5 text-indigo-500 transition duration-75"></i>
+                        <span class="ml-3">My Profile</span>
                     </a>
                 </li>
             </ul>
@@ -159,5 +141,6 @@
             sidebar.classList.toggle('-translate-x-full');
         }
     </script>
+    @stack('scripts')
 </body>
 </html>

@@ -25,7 +25,15 @@ class TeacherController extends Controller
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+
         ]);
+
+        $profilePicturePath = null;
+
+        if ($request->hasFile('profile_picture')) {
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        }
 
         // Create the user
         $user = User::create([
@@ -41,6 +49,7 @@ class TeacherController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone_number' => $request->phone_number,
+            'profile_picture' => $profilePicturePath,
         ]);
 
         return redirect()->route('teachers.index')->with('success', 'Teacher added successfully!');
@@ -75,7 +84,21 @@ class TeacherController extends Controller
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email,' . $teacher->user_id,
             'password' => 'nullable|min:8|confirmed',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+
         ]);
+
+        if ($request->hasFile('profile_picture')) {
+            // Delete the old picture if it exists
+            if ($teacher->profile_picture && file_exists(storage_path('app/public/' . $teacher->profile_picture))) {
+                unlink(storage_path('app/public/' . $teacher->profile_picture));
+            }
+        
+            // Store the new picture
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $teacher->update(['profile_picture' => $profilePicturePath]);
+        }
+
 
         // Update the user
         $teacher->user->update([
@@ -103,6 +126,11 @@ class TeacherController extends Controller
     // Delete a teacher
     public function destroy(Teacher $teacher)
     {
+        // Delete the profile picture if it exists
+        if ($teacher->profile_picture && file_exists(storage_path('app/public/' . $teacher->profile_picture))) {
+            unlink(storage_path('app/public/' . $teacher->profile_picture));
+        }
+
         // Delete the associated user
         $teacher->user()->delete();
 
@@ -110,8 +138,5 @@ class TeacherController extends Controller
         $teacher->delete();
 
         return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully!');
-
     }
-
-    
 }

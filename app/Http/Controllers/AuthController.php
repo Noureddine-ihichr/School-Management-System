@@ -40,6 +40,10 @@ class AuthController extends Controller
                 // Redirect students to their dashboard
                 return redirect()->route('dashboard.teacher');
             }
+
+            if ($user->role === 'student') {
+                return redirect()->route('dashboard.student');
+            }
     
             // (Add other roles later, e.g., teacher)
             return redirect('/'); // Temporary fallback

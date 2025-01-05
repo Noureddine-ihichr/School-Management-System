@@ -17,6 +17,7 @@
                 <table class="w-full whitespace-nowrap">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile Picture</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
@@ -27,6 +28,17 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($teachers as $teacher)
                             <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @if($teacher->profile_picture)
+                                        <img src="{{ asset('storage/' . $teacher->profile_picture) }}" alt="{{ $teacher->first_name }}'s profile" class="h-10 w-10 rounded-full object-cover">
+                                    @else
+                                        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->first_name }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->last_name }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->phone_number }}</td>
