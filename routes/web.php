@@ -17,6 +17,7 @@ use App\Http\Controllers\TimetableController;
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -73,7 +74,9 @@ Route::resource('teachers', TeacherController::class);
 // Student Routes
 Route::resource('students', StudentController::class);
 
-// 
+// Classe Routes
+Route::resource('classes', ClassController::class);
+Route::put('/classes/{class}', [ClassController::class, 'update'])->name('classes.update');
 
 
 // //Student Dashboard Routes

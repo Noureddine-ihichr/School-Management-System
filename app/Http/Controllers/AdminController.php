@@ -113,4 +113,5 @@ public function destroy($id)
     return redirect()->route('admin.management')->with('success', 'Admin deleted successfully.');
 }
 
+
 }
