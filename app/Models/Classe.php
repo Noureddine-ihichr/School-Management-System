@@ -3,25 +3,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Classe extends Model
 {
-   
-
     protected $fillable = [
         'name',
-        'teacher_id',
     ];
 
-    // Relationships
-    public function teacher()
+    // Change to many-to-many relationship
+    public function teachers()
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsToMany(Teacher::class, 'classe_teacher');
     }
 
     public function students()
     {
         return $this->belongsToMany(Student::class, 'classe_student');
     }
-    
 }

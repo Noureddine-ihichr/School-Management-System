@@ -12,7 +12,7 @@ class ClassController extends Controller
     // Show all classes
     public function index()
     {
-        $classes = Classe::with('teacher', 'students')->get();
+        $classes = Classe::with('teachers', 'students')->get();
         return view('classes.index', compact('classes'));
     }
 
@@ -29,15 +29,20 @@ class ClassController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'teacher_id' => 'nullable|exists:teachers,id',
+            'teachers' => 'nullable|array',
+            'teachers.*' => 'exists:teachers,id',
             'students' => 'nullable|array',
             'students.*' => 'exists:students,id',
         ]);
 
         $classe = Classe::create([
             'name' => $request->name,
-            'teacher_id' => $request->teacher_id,
         ]);
+
+        // Attach teachers to the class
+        if ($request->has('teachers')) {
+            $classe->teachers()->attach($request->teachers);
+        }
 
         // Attach students to the class
         if ($request->has('students')) {
@@ -48,41 +53,68 @@ class ClassController extends Controller
     }
 
     // Show form to edit a class
-    public function edit(Classe $classe)
+    public function edit(Classe $class)
     {
         $teachers = Teacher::all();
         $students = Student::all();
-        return view('classes.edit', compact('classe', 'teachers', 'students'));
+        return view('classes.edit', compact('class', 'teachers', 'students'));
     }
 
     // Update a class
-    public function update(Request $request, Classe $classe)
+    public function update(Request $request, Classe $class)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'teacher_id' => 'nullable|exists:teachers,id',
+            'teachers' => 'nullable|array',
+            'teachers.*' => 'exists:teachers,id',
             'students' => 'nullable|array',
             'students.*' => 'exists:students,id',
         ]);
 
-        $classe->update([
+        $class->update([
             'name' => $request->name,
-            'teacher_id' => $request->teacher_id,
         ]);
+
+        // Sync teachers for the class
+        if ($request->has('teachers')) {
+            $class->teachers()->sync($request->teachers);
+        }
 
         // Sync students for the class
         if ($request->has('students')) {
-            $classe->students()->sync($request->students);
+            $class->students()->sync($request->students);
         }
 
-        return redirect()->route('classes.index')->with('success', 'Classe updated successfully.');
+        return redirect()->route('classes.index')->with('success', 'Class updated successfully.');
     }
 
     // Delete a class
-    public function destroy(Classe $classe)
+    public function destroy(Classe $class)
     {
-        $classe->students()->detach(); // Detach all students
-        $classe->delete();
-        return redirect()->route('classes.index')->with('success', 'Classe deleted successfully.');
+        try {
+            $class->students()->detach(); // Detach all students
+            $class->delete();
+            return redirect()->route('classes.index')->with('success', 'Class deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('classes.index')->with('error', 'Failed to delete class. Please try again.');
+        }
+    }
+
+    public function show(Classe $class)
+    {
+        $class->load('teachers', 'students');
+        return view('classes.show', compact('class'));
+    }
+
+    public function removeTeacher(Classe $class, Teacher $teacher)
+    {
+        $class->teachers()->detach($teacher->id);
+        return back()->with('success', 'Teacher removed from class successfully.');
+    }
+
+    public function removeStudent(Classe $class, Student $student)
+    {
+        $class->students()->detach($student->id);
+        return back()->with('success', 'Student removed from class successfully.');
     }
 }

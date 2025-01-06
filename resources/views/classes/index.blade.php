@@ -38,7 +38,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teachers</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -47,14 +47,33 @@
                         @foreach ($classes as $classe)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $classe->name }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $classe->teacher->first_name ?? 'No Teacher' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $classe->students->count() }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full">
+                                        {{ $classe->teachers->count() }} Teachers
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                        {{ $classe->students->count() }} Students
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 text-sm font-medium space-x-2">
-                                    <a href="{{ route('classes.edit', $classe->id) }}" class="text-green-600 hover:text-green-900 bg-green-100 px-3 py-1 rounded-full">Edit</a>
-                                    <form action="{{ route('classes.destroy', $classe->id) }}" method="POST" class="inline-block">
+                                    <a href="{{ route('classes.show', ['class' => $classe->id]) }}" 
+                                       class="text-blue-600 hover:text-blue-900 bg-blue-100 px-3 py-1 rounded-full">
+                                        View
+                                    </a>
+                                    <a href="{{ route('classes.edit', ['class' => $classe->id]) }}" 
+                                       class="text-green-600 hover:text-green-900 bg-green-100 px-3 py-1 rounded-full">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('classes.destroy', ['class' => $classe->id]) }}" method="POST" class="inline-block">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 px-3 py-1 rounded-full" onclick="return confirm('Are you sure?')">Delete</button>
+                                        <button type="submit" 
+                                                class="text-red-600 hover:text-red-900 bg-red-100 px-3 py-1 rounded-full"
+                                                onclick="confirmDelete(event)">
+                                            Delete
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -65,3 +84,12 @@
         </div>
     </div>
 @endsection
+
+<script>
+    function confirmDelete(event) {
+        event.preventDefault();
+        if (confirm('Are you sure you want to delete this class? This action cannot be undone.')) {
+            event.target.closest('form').submit();
+        }
+    }
+</script>

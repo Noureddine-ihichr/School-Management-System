@@ -72,6 +72,26 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        [x-cloak] { display: none !important; }
+        
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms ease-out, transform 300ms ease-out;
+        }
+        .modal-leave {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-leave-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 200ms ease-in, transform 200ms ease-in;
+        }
     </style>
 </head>
 <body class="bg-gray-50 bg-pattern min-h-screen">

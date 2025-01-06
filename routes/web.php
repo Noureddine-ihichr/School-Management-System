@@ -11,8 +11,8 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ClassController;
-use App\Http\Controllers\AbsenceController;
-use App\Http\Controllers\TimetableController;
+//use App\Http\Controllers\AbsenceController;
+//use App\Http\Controllers\TimetableController;
 
 
 
@@ -76,7 +76,6 @@ Route::resource('students', StudentController::class);
 
 // Classe Routes
 Route::resource('classes', ClassController::class);
-Route::put('/classes/{class}', [ClassController::class, 'update'])->name('classes.update');
 
 
 // //Student Dashboard Routes
@@ -98,3 +97,7 @@ Route::put('/classes/{class}', [ClassController::class, 'update'])->name('classe
 
 // // Timetable Routes
 // Route::resource('timetables', TimetableController::class);
+
+// Add these routes within your classes resource group
+Route::delete('/classes/{class}/teachers/{teacher}', [ClassController::class, 'removeTeacher'])->name('classes.remove-teacher');
+Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])->name('classes.remove-student');
