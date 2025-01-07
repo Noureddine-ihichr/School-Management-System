@@ -93,7 +93,7 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-sm text-gray-500">Class</span>
-                            <span class="mt-1 text-gray-900">{{ $student->class ?? 'Not assigned' }}</span>
+                            <span class="mt-1 text-gray-900">{{ $student->classes->pluck('name')->join(', ') ?: 'Not assigned' }}</span>
                         </div>
                     </div>
                 </div>

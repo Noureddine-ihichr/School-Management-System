@@ -121,6 +121,7 @@ public function update(Request $request, \App\Models\Student $student)
 
 public function show(Student $student)
 {
+    $student = $student->load('classes');
     return view('students.show', compact('student'));
 }
 
