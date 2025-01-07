@@ -69,8 +69,8 @@
                 </li>
                 <li>
                     <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
-                        <i class="fas fa-calendar-alt w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Classes</span>
+                    <i class="fas fa-chalkboard w-5 h-5 text-indigo-500 transition duration-75"></i> 
+                    <span class="ml-3">Classes</span>
                     </a>
                 </li>
                 <li>
