@@ -75,15 +75,11 @@ class ClassController extends Controller
             'name' => $request->name,
         ]);
 
-        // Sync teachers for the class
-        if ($request->has('teachers')) {
-            $class->teachers()->sync($request->teachers);
-        }
+        // Sync teachers for the class - use empty array if no teachers selected
+        $class->teachers()->sync($request->teachers ?? []);
 
-        // Sync students for the class
-        if ($request->has('students')) {
-            $class->students()->sync($request->students);
-        }
+        // Sync students for the class - use empty array if no students selected
+        $class->students()->sync($request->students ?? []);
 
         return redirect()->route('classes.index')->with('success', 'Class updated successfully.');
     }
@@ -108,13 +104,33 @@ class ClassController extends Controller
 
     public function removeTeacher(Classe $class, Teacher $teacher)
     {
-        $class->teachers()->detach($teacher->id);
-        return back()->with('success', 'Teacher removed from class successfully.');
+        try {
+            $class->teachers()->detach($teacher->id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Teacher removed from class successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove teacher.'
+            ], 500);
+        }
     }
 
     public function removeStudent(Classe $class, Student $student)
     {
-        $class->students()->detach($student->id);
-        return back()->with('success', 'Student removed from class successfully.');
+        try {
+            $class->students()->detach($student->id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Student removed from class successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove student.'
+            ], 500);
+        }
     }
 }

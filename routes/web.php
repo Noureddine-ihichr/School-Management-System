@@ -61,12 +61,12 @@ Route::post('/admin-management', [AdminController::class, 'store'])->name('admin
 Route::get('/admin-management/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
 Route::put('/admin-management/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
-
+Route::post('/classes/{class}/teachers/{teacher}/remove', [ClassController::class, 'removeTeacher'])->name('classes.remove-teacher');
+Route::post('/classes/{class}/students/{student}/remove', [ClassController::class, 'removeStudent'])->name('classes.remove-student');
 
 
 //routes for sections 
 
-//admin mangment Routes
 
 // Teacher Routes
 Route::resource('teachers', TeacherController::class);
@@ -89,15 +89,3 @@ Route::resource('classes', ClassController::class);
 
 
 
-// Class Routes
-// Route::resource('classes', ClassController::class);
-
-// // Absence Routes
-// Route::resource('absences', AbsenceController::class);
-
-// // Timetable Routes
-// Route::resource('timetables', TimetableController::class);
-
-// Add these routes within your classes resource group
-Route::delete('/classes/{class}/teachers/{teacher}', [ClassController::class, 'removeTeacher'])->name('classes.remove-teacher');
-Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])->name('classes.remove-student');
