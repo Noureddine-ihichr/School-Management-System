@@ -1,13 +1,16 @@
 @extends('layouts.admin-dashboard')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6" x-data="{ 
+    showRemoveTeacherModal: false, teacherToRemove: null, teacherName: '',
+    showRemoveStudentModal: false, studentToRemove: null, studentName: ''
+}">
     <!-- Page Header -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
         <div class="flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">{{ $class->name }}</h1>
-                <p class="text-gray-600 mt-2">Class Management</p>
+                <p class="text-gray-600 mt-2">Class Details</p>
             </div>
             <div class="flex gap-3">
                 <a href="{{ route('classes.edit', $class->id) }}" 
@@ -47,17 +50,24 @@
                     <div id="teacher-{{ $teacher->id }}" 
                          class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
                         <div class="flex items-center">
-                            <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                {{ strtoupper(substr($teacher->first_name ?? '', 0, 2)) }}
-                            </div>
+                            @if($teacher->profile_picture)
+                                <img src="{{ asset('storage/' . $teacher->profile_picture) }}" alt="{{ $teacher->first_name }}" class="h-10 w-10 rounded-full object-cover">
+                            @else
+                                <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                    {{ strtoupper(substr($teacher->first_name ?? '', 0, 2)) }}
+                                </div>
+                            @endif
                             <div class="ml-4 text-sm font-medium text-gray-900">
                                 {{ $teacher->first_name ?? '' }} {{ $teacher->last_name ?? '' }}
                             </div>
                         </div>
-                        <button onclick="removeTeacher({{ $class->id }}, {{ $teacher->id }})" 
+                        <button type="button" 
+                                @click="teacherToRemove = {{ $teacher->id }}; 
+                                        teacherName = '{{ $teacher->first_name }} {{ $teacher->last_name }}'; 
+                                        showRemoveTeacherModal = true"
                                 class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-100 transition duration-150 ease-in-out">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
                         </button>
                     </div>
@@ -84,120 +94,164 @@
             </div>
             <div id="students-list" class="space-y-3">
                 @forelse($class->students as $student)
-                    <div id="student-{{ $student->id }}" 
-                         class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out">
+                    <div id="student-{{ $student->id }}" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
                         <div class="flex items-center">
-                            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                                {{ strtoupper(substr($student->first_name ?? '', 0, 2)) }}
-                            </div>
+                            @if($student->profile_picture)
+                                <img src="{{ asset('storage/' . $student->profile_picture) }}" alt="{{ $student->first_name }}" class="h-10 w-10 rounded-full object-cover">
+                            @else
+                                <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    {{ strtoupper(substr($student->first_name ?? '', 0, 2)) }}
+                                </div>
+                            @endif
                             <div class="ml-4 text-sm font-medium text-gray-900">
                                 {{ $student->first_name ?? '' }} {{ $student->last_name ?? '' }}
                             </div>
                         </div>
-                        <button onclick="removeStudent({{ $class->id }}, {{ $student->id }})" 
-                                class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-100 transition duration-150 ease-in-out">
+                        <button type="button"
+                                @click="studentToRemove = {{ $student->id }}; 
+                                        studentName = '{{ $student->first_name }} {{ $student->last_name }}'; 
+                                        showRemoveStudentModal = true"
+                                class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
                         </button>
                     </div>
                 @empty
                     <div class="text-center py-4 text-gray-500">
-                        No students enrolled in this class yet.
+                        No students assigned to this class yet.
                     </div>
                 @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Teacher Modal -->
+    <div x-show="showRemoveTeacherModal" 
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Remove Teacher</h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Are you sure you want to remove <span class="font-medium" x-text="teacherName"></span> from this class? This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <form :action="'/classes/' + {{ $class->id }} + '/teachers/' + teacherToRemove + '/remove'" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Remove
+                        </button>
+                    </form>
+                    <button @click="showRemoveTeacherModal = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Student Modal -->
+    <div x-show="showRemoveStudentModal" 
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Remove Student</h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Are you sure you want to remove <span class="font-medium" x-text="studentName"></span> from this class? This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <form :action="'/classes/' + {{ $class->id }} + '/students/' + studentToRemove + '/remove'" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Remove
+                        </button>
+                    </form>
+                    <button @click="showRemoveStudentModal = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-function removeTeacher(classId, teacherId) {
-    if (!confirm('Are you sure you want to remove this teacher from the class?')) {
-        return;
-    }
-
-    fetch(`/classes/${classId}/teachers/${teacherId}/remove`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById(`teacher-${teacherId}`).remove();
-            showNotification(data.message, 'success');
-        } else {
-            showNotification(data.message, 'error');
-        }
-    })
-    .catch(error => {
-        showNotification('An error occurred while removing the teacher.', 'error');
-    });
-}
-
-function removeStudent(classId, studentId) {
-    if (!confirm('Are you sure you want to remove this student from the class?')) {
-        return;
-    }
-
-    fetch(`/classes/${classId}/students/${studentId}/remove`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById(`student-${studentId}`).remove();
-            showNotification(data.message, 'success');
-        } else {
-            showNotification(data.message, 'error');
-        }
-    })
-    .catch(error => {
-        showNotification('An error occurred while removing the student.', 'error');
-    });
-}
-
-function showNotification(message, type) {
+function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 ${
-        type === 'success' ? 'bg-green-100 text-green-800 border-l-4 border-green-500' : 'bg-red-100 text-red-800 border-l-4 border-red-500'
-    }`;
+    notification.className = `fixed bottom-4 right-4 rounded-lg p-4 text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} transition-opacity duration-500`;
+    notification.style.zIndex = '9999';
+    notification.textContent = message;
     
-    notification.innerHTML = `
-        <div class="flex items-center">
-            <div class="flex-shrink-0">
-                ${type === 'success' 
-                    ? '<svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>'
-                    : '<svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>'
-                }
-            </div>
-            <div class="ml-3">
-                <p class="text-sm font-medium">${message}</p>
-            </div>
-        </div>
-    `;
-
     document.body.appendChild(notification);
-
-    // Animate in
+    
     setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-
-    // Remove after delay
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
         setTimeout(() => {
             notification.remove();
-        }, 300);
+        }, 500);
     }, 3000);
 }
 </script>
-@endsection 
+@endsection

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Teacher extends Model
 {
@@ -19,8 +20,17 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function classes()
     {
         return $this->belongsToMany(Classe::class, 'classe_teacher');
+    }
+
+    /**
+     * Get the subjects that this teacher teaches.
+     */
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'subject_teacher');
     }
 }

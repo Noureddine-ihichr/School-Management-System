@@ -92,7 +92,7 @@
                             </span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-sm text-gray-500">Subject</span>
+                            <span class="text-sm text-gray-500">Subjects</span>
                             <span class="mt-1 text-gray-900">{{ $teacher->subject ?? 'Not assigned' }}</span>
                         </div>
                     </div>

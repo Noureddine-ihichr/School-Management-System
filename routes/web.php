@@ -9,6 +9,7 @@ use App\Http\Controllers\TeacherDashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ClassController;
 //use App\Http\Controllers\AbsenceController;
@@ -76,6 +77,31 @@ Route::resource('students', StudentController::class);
 
 // Classe Routes
 Route::resource('classes', ClassController::class);
+
+// Subject Routes
+Route::resource('subjects', SubjectController::class);
+// After your subjects resource route
+Route::delete('subjects/{subject}/teachers/{teacher}', [SubjectController::class, 'removeTeacher'])
+    ->name('subjects.teachers.remove');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // //Student Dashboard Routes
