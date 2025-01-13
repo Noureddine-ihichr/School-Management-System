@@ -58,13 +58,14 @@ class TeacherController extends Controller
     // List all teachers
     public function index()
     {
-        $teachers = Teacher::with('user')->paginate(10);
+        $teachers = Teacher::with(['user', 'subjects', 'classes'])->paginate(10);
         return view('teachers.index', compact('teachers'));
     }
 
     // Show the details of a specific teacher
     public function show(Teacher $teacher)
     {
+        $teacher->load(['subjects', 'classes']);
         return view('teachers.show', compact('teacher'));
     }
 

@@ -93,9 +93,57 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-sm text-gray-500">Subjects</span>
-                            <span class="mt-1 text-gray-900">{{ $teacher->subject ?? 'Not assigned' }}</span>
+                            <span class="mt-1 text-gray-900">{{ $teacher->subjects->count() }}</span>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-book mr-2 text-indigo-500"></i>
+                        Subjects
+                    </h3>
+                </div>
+                <div class="p-6">
+                    @if($teacher->subjects->count() > 0)
+                        <div class="grid grid-cols-2 gap-4">
+                            @foreach($teacher->subjects as $subject)
+                                <div class="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+                                    <i class="fas fa-book-open text-indigo-500"></i>
+                                    <span class="text-gray-700">{{ $subject->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-500 italic">No subjects assigned</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Classes -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-chalkboard mr-2 text-indigo-500"></i>
+                        Classes
+                    </h3>
+                </div>
+                <div class="p-6">
+                    @if($teacher->classes->count() > 0)
+                        <div class="grid grid-cols-2 gap-4">
+                            @foreach($teacher->classes as $class)
+                                <div class="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+                                    <i class="fas fa-users text-indigo-500"></i>
+                                    <span class="text-gray-700">{{ $class->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-500 italic">No classes assigned</p>
+                    @endif
                 </div>
             </div>
 

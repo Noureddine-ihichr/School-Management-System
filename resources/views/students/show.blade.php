@@ -131,6 +131,49 @@
                 </div>
             </div>
             @endif
+
+            <!-- Class Information -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-graduation-cap mr-2 text-indigo-500"></i>
+                        Class Information
+                    </h3>
+                </div>
+                <div class="p-6">
+                    @if($student->class)
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-lg font-medium text-gray-900">{{ $student->class->name }}</h4>
+                                    <p class="text-sm text-gray-500">Class Code: {{ $student->class->code ?? 'N/A' }}</p>
+                                </div>
+                                <a href="{{ route('classes.show', $student->class->id) }}" 
+                                   class="inline-flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition duration-200">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    View Class Details
+                                </a>
+                            </div>
+                            
+                            @if($student->class->teachers->count() > 0)
+                                <div class="mt-4">
+                                    <h5 class="text-sm font-medium text-gray-700 mb-2">Class Teachers:</h5>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($student->class->teachers as $teacher)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                                <i class="fas fa-chalkboard-teacher mr-1"></i>
+                                                {{ $teacher->first_name }} {{ $teacher->last_name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <p class="text-gray-500 italic">Not enrolled in any class</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>

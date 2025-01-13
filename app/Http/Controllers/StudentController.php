@@ -12,10 +12,7 @@ class StudentController extends Controller
 
     public function index()
     {
-        // Fetch all students with their associated users
-        $students = \App\Models\Student::with('user')->paginate(10);
-    
-        // Return the index view with the students data
+        $students = Student::with(['user', 'class'])->paginate(10);
         return view('students.index', compact('students'));
     }
 
@@ -121,7 +118,7 @@ public function update(Request $request, \App\Models\Student $student)
 
 public function show(Student $student)
 {
-    $student = $student->load('classes');
+    $student->load(['class.teachers']);
     return view('students.show', compact('student'));
 }
 
