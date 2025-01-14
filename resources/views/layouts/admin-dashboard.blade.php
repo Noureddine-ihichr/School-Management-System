@@ -173,11 +173,27 @@
     </div>
 
     <!-- Main Content -->
-    <main class="sm:ml-64">
-        <div class="p-4 max-w-full">
-            @yield('content')
-        </div>
-    </main>
+    <div class="p-4 sm:ml-64">
+        <!-- Top Navigation -->
+        <nav class="bg-white/80 backdrop-blur-sm border border-gray-200 px-4 py-2.5 rounded-lg mb-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button class="sm:hidden mr-3" onclick="toggleSidebar()">
+                    <i class="fas fa-bars text-gray-600"></i>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-bell text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Admin">
+                </div>
+            </div>
+        </nav>
+
+        @yield('content')
+    </div>
 
     <script>
         function toggleSidebar() {

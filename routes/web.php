@@ -62,8 +62,8 @@ Route::post('/admin-management', [AdminController::class, 'store'])->name('admin
 Route::get('/admin-management/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
 Route::put('/admin-management/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::delete('/admin-management/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
-Route::post('/classes/{class}/teachers/{teacher}/remove', [ClassController::class, 'removeTeacher'])->name('classes.remove-teacher');
-Route::post('/classes/{class}/students/{student}/remove', [ClassController::class, 'removeStudent'])->name('classes.remove-student');
+Route::delete('/classes/{class}/teachers/{teacher}', [ClassController::class, 'removeTeacher'])->name('classes.teachers.remove');
+Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])->name('classes.students.remove');
 
 
 //routes for sections 
@@ -112,6 +112,3 @@ Route::delete('subjects/{subject}/teachers/{teacher}', [SubjectController::class
 // Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 // Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
 // Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
-
-
-

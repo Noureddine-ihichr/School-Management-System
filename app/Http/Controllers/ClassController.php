@@ -106,15 +106,9 @@ class ClassController extends Controller
     {
         try {
             $class->teachers()->detach($teacher->id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Teacher removed from class successfully.'
-            ]);
+            return back()->with('success', 'Teacher removed from class successfully.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to remove teacher.'
-            ], 500);
+            return back()->with('error', 'Failed to remove teacher.');
         }
     }
 
@@ -122,15 +116,9 @@ class ClassController extends Controller
     {
         try {
             $class->students()->detach($student->id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Student removed from class successfully.'
-            ]);
+            return back()->with('success', 'Student removed from class successfully.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to remove student.'
-            ], 500);
+            return back()->with('error', 'Failed to remove student.');
         }
     }
 }
