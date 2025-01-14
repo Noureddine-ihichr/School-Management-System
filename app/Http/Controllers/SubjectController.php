@@ -18,7 +18,7 @@ class SubjectController extends Controller
         $subjects = Subject::withCount('teachers')->paginate(10);
     
         // Pass subjects to the view
-        return view('subjects.index', compact('subjects'));
+        return view('admin-section.subjects.index', compact('subjects'));
     }
     
 
@@ -28,7 +28,7 @@ class SubjectController extends Controller
     public function create()
     {
         $teachers = Teacher::all();
-        return view('subjects.create', compact('teachers'));
+        return view('admin-section.subjects.create', compact('teachers'));
     }
 
     /**
@@ -58,7 +58,7 @@ class SubjectController extends Controller
         }
     
         // Redirect to the index page with a success message
-        return redirect()->route('subjects.index')->with('success', 'Subject created successfully!');
+        return redirect()->route('admin-section.subjects.index')->with('success', 'Subject created successfully!');
     }
     
 
@@ -71,7 +71,7 @@ class SubjectController extends Controller
         $subject = Subject::with('teachers')->findOrFail($id);
     
         // Pass the subject data to the view
-        return view('subjects.show', compact('subject'));
+        return view('admin-section.subjects.show', compact('subject'));
     }
 
     /**
@@ -86,7 +86,7 @@ class SubjectController extends Controller
         $teachers = Teacher::all();
 
         // Pass the subject and teachers data to the view
-        return view('subjects.edit', compact('subject', 'teachers'));
+        return view('admin-section.subjects.edit', compact('subject', 'teachers'));
     }
 
     /**
@@ -121,7 +121,7 @@ class SubjectController extends Controller
         }
     
         // Redirect to the subject list with a success message
-        return redirect()->route('subjects.index')->with('success', 'Subject updated successfully!');
+        return redirect()->route('admin-section.subjects.index')->with('success', 'Subject updated successfully!');
     }
     
     /**
@@ -134,7 +134,7 @@ class SubjectController extends Controller
     $subject->delete();
 
     // Redirect to the index page with a success message
-    return redirect()->route('subjects.index')->with('success', 'Subject deleted successfully!');
+    return redirect()->route('admin-section.subjects.index')->with('success', 'Subject deleted successfully!');
 }
 
     /**

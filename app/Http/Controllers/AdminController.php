@@ -16,13 +16,13 @@ class AdminController extends Controller
         $admins = User::where('role', 'admin')->get();
     
         // Return the admin management view
-        return view('admin-management.index', compact('admins'));
+        return view('admin-section.admin-management.index', compact('admins'));
     }
 
 
 public function create()
 {
-    return view('admin-management.create');
+    return view('admin-section.admin-management.create');
 }
 
 public function store(Request $request)
@@ -94,23 +94,32 @@ public function edit($id)
     $admin = User::findOrFail($id);
 
     // Pass the admin to the edit view
-    return view('admin-management.edit', compact('admin'));
+    return view('admin-section.admin-management.edit', compact('admin'));
 }
 
 public function destroy($id)
 {
-    // Find the admin by ID
-    $admin = User::findOrFail($id);
+    try {
+        // Find the admin by ID
+        $admin = User::findOrFail($id);
 
-    // Check if the user is an admin
-    if ($admin->role !== 'admin') {
-        return redirect()->route('admin.management')->with('error', 'Cannot delete this user.');
+        // Check if the user is an admin
+        if ($admin->role !== 'admin') {
+            return redirect()->route('admin.management')->with('error', 'Cannot delete this user.');
+        }
+
+        // Delete the profile icon if it exists
+        if ($admin->profile_icon) {
+            \Storage::delete('public/' . $admin->profile_icon);
+        }
+
+        // Delete the admin
+        $admin->delete();
+
+        return redirect()->route('admin.management')->with('success', 'Admin deleted successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('admin.management')->with('error', 'Error deleting admin: ' . $e->getMessage());
     }
-
-    // Delete the admin
-    $admin->delete();
-
-    return redirect()->route('admin.management')->with('success', 'Admin deleted successfully.');
 }
 
 

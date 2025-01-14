@@ -51,7 +51,6 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subjects</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classes</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -74,9 +73,6 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->first_name }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->last_name }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $teacher->phone_number }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
-                                    {{ $teacher->user ? $teacher->user->email : 'N/A' }}
-                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                                         {{ $teacher->subjects->count() }}

@@ -12,7 +12,7 @@ class TeacherController extends Controller
     // Show the form to add a new teacher
     public function create()
     {
-        return view('teachers.create');
+        return view('admin-section.teachers.create');
     }
 
     // Save a new teacher
@@ -59,20 +59,20 @@ class TeacherController extends Controller
     public function index()
     {
         $teachers = Teacher::with(['user', 'subjects', 'classes'])->paginate(10);
-        return view('teachers.index', compact('teachers'));
+        return view('admin-section.teachers.index', compact('teachers'));
     }
 
     // Show the details of a specific teacher
     public function show(Teacher $teacher)
     {
         $teacher->load(['subjects', 'classes']);
-        return view('teachers.show', compact('teacher'));
+        return view('admin-section.teachers.show', compact('teacher'));
     }
 
     // Show the form to edit a teacher
     public function edit(Teacher $teacher)
     {
-        return view('teachers.edit', compact('teacher'));
+        return view('admin-section.teachers.edit', compact('teacher'));
     }
 
     // Update a teacher

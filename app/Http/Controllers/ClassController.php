@@ -13,7 +13,7 @@ class ClassController extends Controller
     public function index()
     {
         $classes = Classe::with('teachers', 'students')->get();
-        return view('classes.index', compact('classes'));
+        return view('admin-section.classes.index', compact('classes'));
     }
 
     // Show form to create a new class
@@ -21,7 +21,7 @@ class ClassController extends Controller
     {
         $teachers = Teacher::all();
         $students = Student::all();
-        return view('classes.create', compact('teachers', 'students'));
+        return view('admin-section.classes.create', compact('teachers', 'students'));
     }
 
     // Store a new class
@@ -57,7 +57,7 @@ class ClassController extends Controller
     {
         $teachers = Teacher::all();
         $students = Student::all();
-        return view('classes.edit', compact('class', 'teachers', 'students'));
+        return view('admin-section.classes.edit', compact('class', 'teachers', 'students'));
     }
 
     // Update a class
@@ -99,7 +99,7 @@ class ClassController extends Controller
     public function show(Classe $class)
     {
         $class->load('teachers', 'students');
-        return view('classes.show', compact('class'));
+        return view('admin-section.classes.show', compact('class'));
     }
 
     public function removeTeacher(Classe $class, Teacher $teacher)

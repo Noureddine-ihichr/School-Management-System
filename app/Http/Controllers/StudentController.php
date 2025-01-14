@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 
-
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -13,13 +12,13 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::with(['user', 'class'])->paginate(10);
-        return view('students.index', compact('students'));
+        return view('admin-section.students.index', compact('students'));
     }
 
 
     public function create()
     {
-        return view('students.create');
+        return view('admin-section.students.create');
     }
 
 
@@ -62,12 +61,12 @@ class StudentController extends Controller
         'profile_picture' => $profilePicturePath,
     ]);
 
-    return redirect()->route('students.index')->with('success', 'Student added successfully!');
+    return redirect()->route('students.index')->with('success', 'New student added!');
 }
 
 public function edit(\App\Models\Student $student)
 {
-    return view('students.edit', compact('student'));
+    return view('admin-section.students.edit', compact('student'));
 }
 
 public function update(Request $request, \App\Models\Student $student)
@@ -111,15 +110,14 @@ public function update(Request $request, \App\Models\Student $student)
         'address' => $request->address,
     ]);
 
-    return redirect()->route('students.index')->with('success', 'Student updated successfully!');
-
-
+    return redirect()->route('students.index')->with('success', 'Student updated!');
 }
+
 
 public function show(Student $student)
 {
     $student->load(['class.teachers']);
-    return view('students.show', compact('student'));
+    return view('admin-section.students.show', compact('student'));
 }
 
 
@@ -131,7 +129,7 @@ public function destroy(Student $student)
     // Delete the student record
     $student->delete();
 
-    return redirect()->route('students.index')->with('success', 'Student deleted successfully!');
+    return redirect()->route('students.index')->with('success', 'Student deleted!');
 }
 
 
