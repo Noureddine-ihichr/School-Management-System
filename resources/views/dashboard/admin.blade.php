@@ -106,9 +106,11 @@
                 <button class="text-gray-600 hover:text-gray-800">
                     <i class="fas fa-bell text-xl"></i>
                 </button>
-                <div class="flex items-center">
-                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Admin">
-                </div>
+                <a href="{{ route('profile.admin') }}" class="flex items-center focus:outline-none">
+                    <img class="w-8 h-8 rounded-full object-cover" 
+                         src="{{ auth()->user()->profile_picture ? Storage::url(auth()->user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
+                         alt="{{ auth()->user()->name }}">
+                </a>
             </div>
         </nav>
 

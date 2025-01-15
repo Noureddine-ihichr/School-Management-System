@@ -12,6 +12,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ProfileController;
 //use App\Http\Controllers\AbsenceController;
 //use App\Http\Controllers\TimetableController;
 
@@ -81,6 +82,22 @@ Route::resource('subjects', SubjectController::class);
 // After your subjects resource route
 Route::delete('subjects/{subject}/teachers/{teacher}', [SubjectController::class, 'removeTeacher'])
     ->name('subjects.teachers.remove');
+
+// Add these routes for profile management
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/profile', function () {
+        return view('admin-section.profile.profile');
+    })->name('profile.admin');
+    
+    Route::get('/super-admin/profile', function () {
+        return view('admin.profile');
+    })->name('profile.super_admin');
+});
+
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture'])
+    ->name('profile.update.picture');
 
 
 
