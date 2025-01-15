@@ -36,7 +36,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //admin dashboard
 Route::middleware('admin')->group(function () {
-    Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('dashboard.admin');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
     // Admin management routes
     Route::get('/admin-management', [AdminController::class, 'index'])->name('admin.management');
@@ -127,3 +127,6 @@ Route::post('/profile/update-picture', [ProfileController::class, 'updateProfile
 // Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 // Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
 // Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+// Add this route if it doesn't exist
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -23,22 +23,25 @@
                 
                 <!-- Profile Icon Upload -->
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_icon">
-                        Profile Icon
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_picture">
+                        Profile Picture
                     </label>
                     <div class="flex items-center space-x-4">
                         <div class="relative group">
                             <div class="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors duration-200">
-                                <img id="preview" src="#" alt="Preview" class="h-full w-full rounded-full object-cover hidden">
-                                <span id="placeholder" class="text-gray-400 group-hover:text-blue-500">
+                                <img id="preview" 
+                                     src="{{ old('profile_picture') ? asset('storage/' . old('profile_picture')) : '#' }}" 
+                                     alt="Preview" 
+                                     class="h-full w-full rounded-full object-cover {{ old('profile_picture') ? '' : 'hidden' }}">
+                                <span id="placeholder" class="text-gray-400 group-hover:text-blue-500 {{ old('profile_picture') ? 'hidden' : '' }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                     </svg>
                                 </span>
                             </div>
                             <input type="file" 
-                                   id="profile_icon" 
-                                   name="profile_icon" 
+                                   id="profile_picture" 
+                                   name="profile_picture" 
                                    accept="image/*"
                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                    onchange="previewImage(this)">
@@ -48,7 +51,7 @@
                             <p>SVG, PNG, JPG (max. 2MB)</p>
                         </div>
                     </div>
-                    @error('profile_icon')
+                    @error('profile_picture')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>

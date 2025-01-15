@@ -36,29 +36,31 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the incoming request
-        $validated = $request->validate([
-            'name' => 'required|unique:subjects,name|max:255',
-            'code' => 'nullable|unique:subjects,code|max:50',
-            'description' => 'nullable|string',
-            'teachers' => 'nullable|array',
+        // Validate the request
+        $request->validate([
+            'name' => 'required|unique:subjects',
+            'code' => 'required|unique:subjects',
+            'description' => 'required',
+            'teachers' => 'required|array',
             'teachers.*' => 'exists:teachers,id'
         ]);
-    
-        // Create the subject
-        $subject = Subject::create([
-            'name' => $validated['name'],
-            'code' => $validated['code'],
-            'description' => $validated['description']
-        ]);
 
-        // Attach teachers if any are selected
-        if ($request->has('teachers')) {
+        try {
+            // Create the subject
+            $subject = Subject::create([
+                'name' => $request->name,
+                'code' => $request->code,
+                'description' => $request->description,
+            ]);
+
+            // Attach teachers to the subject
             $subject->teachers()->attach($request->teachers);
+
+            // Redirect to subjects.index instead of admin-section.subjects.index
+            return redirect()->route('subjects.index')->with('success', 'Subject created successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error creating subject: ' . $e->getMessage());
         }
-    
-        // Redirect to the index page with a success message
-        return redirect()->route('admin-section.subjects.index')->with('success', 'Subject created successfully!');
     }
     
 
@@ -120,22 +122,22 @@ class SubjectController extends Controller
             $subject->teachers()->detach();
         }
     
-        // Redirect to the subject list with a success message
-        return redirect()->route('admin-section.subjects.index')->with('success', 'Subject updated successfully!');
+        // Changed from admin-section.subjects.index to subjects.index
+        return redirect()->route('subjects.index')->with('success', 'Subject updated successfully!');
     }
     
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
-    // Find the subject by its ID and delete it
-    $subject = Subject::findOrFail($id);
-    $subject->delete();
+    {
+        // Find the subject by its ID and delete it
+        $subject = Subject::findOrFail($id);
+        $subject->delete();
 
-    // Redirect to the index page with a success message
-    return redirect()->route('admin-section.subjects.index')->with('success', 'Subject deleted successfully!');
-}
+        // Changed from admin-section.subjects.index to subjects.index
+        return redirect()->route('subjects.index')->with('success', 'Subject deleted successfully!');
+    }
 
     /**
      * Remove a teacher from a subject

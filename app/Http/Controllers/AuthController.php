@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -13,47 +14,28 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validate the request
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required'
         ]);
-    
-        // Find the user by email
-        $user = \App\Models\User::where('email', $request->email)->first();
-    
-        if ($user && \Hash::check($request->password, $user->password)) {
-            auth()->login($user); // Laravel's built-in auth system
-            
-            // Redirect based on the user's role
-            if ($user->role === 'super_admin') {
-                // Redirect super admin to the admin dashboard
-                return redirect()->route('dashboard.admin');
-            }
-    
-            if ($user->role === 'admin') {
-                // Redirect regular admin to the admin dashboard
-                return redirect()->route('dashboard.admin');
-            }
-    
-            if ($user->role === 'teacher') {
-                // Redirect students to their dashboard
-                return redirect()->route('dashboard.teacher');
-            }
 
-            if ($user->role === 'student') {
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            // Redirect based on user role
+            $user = Auth::user();
+            if ($user->role === 'admin' || $user->role === 'super_admin') {
+                return redirect()->route('admin.dashboard'); // Changed from dashboard.admin
+            } elseif ($user->role === 'teacher') {
+                return redirect()->route('dashboard.teacher');
+            } elseif ($user->role === 'student') {
                 return redirect()->route('dashboard.student');
             }
-    
-            // (Add other roles later, e.g., teacher)
-            return redirect('/'); // Temporary fallback
         }
-    
-        // If authentication fails, redirect back with an error
+
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
-            'password' => 'The provided credentials do not match our records.',
-        ]);
+        ])->onlyInput('email');
     }
     
 

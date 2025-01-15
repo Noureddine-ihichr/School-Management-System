@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Teacher;
+use App\Models\Student;
+use App\Models\Subject;
+use App\Models\Classe; 
 
 
 class AdminController extends Controller
@@ -31,29 +35,62 @@ public function store(Request $request)
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:8|confirmed', // Requires password confirmation
-        'profile_icon' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // Ensure it's an image
-
+        'password' => 'required|min:8|confirmed',
+        'profile_picture' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
     ]);
 
-    // Handle the profile icon upload
-    $profileIconPath = null;
-    if ($request->hasFile('profile_icon')) {
-        $profileIconPath = $request->file('profile_icon')->store('profile_icons', 'public');
+    // Handle the profile picture upload
+    $profilePicturePath = null;
+    if ($request->hasFile('profile_picture')) {
+        try {
+            // Store directly in profile_pictures directory
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+            
+            // Verify the file was stored successfully
+            if (!$profilePicturePath) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Failed to upload profile picture. Please try again.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error uploading profile picture: ' . $e->getMessage());
+        }
     }
 
-    // Create the new admin
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password), // Hash the password
-        'role' => 'admin',
-        'profile_icon' => $profileIconPath, // Save the path to the database
+    try {
+        // Create the new admin
+        $admin = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'admin',
+            'profile_picture' => $profilePicturePath,
+        ]);
 
-    ]);
+        // Verify the admin was created with the profile picture
+        if (!$admin || !$admin->profile_picture) {
+            // If something went wrong, delete the uploaded file
+            if ($profilePicturePath) {
+                \Storage::disk('public')->delete($profilePicturePath);
+            }
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to create admin with profile picture.');
+        }
 
-    // Redirect back to the list of admins (we'll create this later)
-    return redirect()->route('admin.management')->with('success', 'Admin created successfully!');
+        return redirect()->route('admin.management')
+            ->with('success', 'Admin created successfully!');
+    } catch (\Exception $e) {
+        // If something went wrong, delete the uploaded file
+        if ($profilePicturePath) {
+            \Storage::disk('public')->delete($profilePicturePath);
+        }
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Error creating admin: ' . $e->getMessage());
+    }
 }
 
 public function update(Request $request, $id)
@@ -65,25 +102,26 @@ public function update(Request $request, $id)
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $admin->id,
-        'profile_icon' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+        'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
     ]);
 
-    // Handle the profile icon upload if provided
-    if ($request->hasFile('profile_icon')) {
-        if ($admin->profile_icon) {
-            // Delete the old icon
-            \Storage::delete('public/' . $admin->profile_icon);
+    // Handle the profile picture upload if provided
+    if ($request->hasFile('profile_picture')) {
+        if ($admin->profile_picture) {
+            // Delete the old picture
+            \Storage::disk('public')->delete($admin->profile_picture);
         }
-        $admin->profile_icon = $request->file('profile_icon')->store('profile_icons', 'public');
+        // Store directly in profile_pictures directory
+        $admin->profile_picture = $request->file('profile_picture')->store('profile_pictures', 'public');
     }
 
     // Update the admin details
     $admin->update([
         'name' => $request->name,
         'email' => $request->email,
+        'profile_picture' => $admin->profile_picture,
     ]);
 
-    // Redirect back with success message
     return redirect()->route('admin.management')->with('success', 'Admin updated successfully.');
 }
 
@@ -108,9 +146,9 @@ public function destroy($id)
             return redirect()->route('admin.management')->with('error', 'Cannot delete this user.');
         }
 
-        // Delete the profile icon if it exists
-        if ($admin->profile_icon) {
-            \Storage::delete('public/' . $admin->profile_icon);
+        // Delete the profile picture if it exists
+        if ($admin->profile_picture) {
+            \Storage::disk('public')->delete($admin->profile_picture);
         }
 
         // Delete the admin
@@ -122,5 +160,22 @@ public function destroy($id)
     }
 }
 
+public function dashboard()
+{
+    // Get counts for different entities
+    $stats = [
+        'teachers' => Teacher::count(),
+        'students' => Student::count(),
+        'subjects' => Subject::count(),
+        'classes' => Classe::count(), // Changed from ClassRoom to Classe
+    ];
+
+    // If user is super admin, also get admin count
+    if (auth()->user()->isSuperAdmin()) {
+        $stats['admins'] = User::where('role', 'admin')->count();
+    }
+
+    return view('dashboard.admin', compact('stats'));
+}
 
 }

@@ -125,9 +125,9 @@
                         @foreach ($admins as $admin)
                             <tr class="hover:bg-gray-50 transition-colors duration-200">
                             <td class="px-6 py-4">
-                                    @if($admin->profile_icon)
-                                        <img src="{{ asset('storage/' . $admin->profile_icon) }}" 
-                                            alt="Profile icon" 
+                                    @if($admin->profile_picture)
+                                        <img src="{{ asset('storage/' . $admin->profile_picture) }}" 
+                                            alt="Profile picture" 
                                             class="h-12 w-12 rounded-full object-cover border-2 border-gray-200">
                                       
                                             <!-- Remove or comment the debugging line -->

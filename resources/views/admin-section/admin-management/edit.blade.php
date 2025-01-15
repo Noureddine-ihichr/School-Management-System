@@ -24,14 +24,14 @@
 
                 <!-- Profile Icon Upload -->
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_icon">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_picture">
                         Profile Icon
                     </label>
                     <div class="flex items-center space-x-4">
                         <div class="relative group">
                             <div class="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors duration-200">
-                                @if ($admin->profile_icon)
-                                    <img id="preview" src="{{ asset('storage/' . $admin->profile_icon) }}" alt="Current Icon" class="h-full w-full rounded-full object-cover">
+                                @if ($admin->profile_picture)
+                                    <img id="preview" src="{{ asset('storage/' . $admin->profile_picture) }}" alt="Current Picture" class="h-full w-full rounded-full object-cover">
                                 @else
                                     <span id="placeholder" class="text-gray-400 group-hover:text-blue-500">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,8 +41,8 @@
                                 @endif
                             </div>
                             <input type="file" 
-                                   id="profile_icon" 
-                                   name="profile_icon" 
+                                   id="profile_picture" 
+                                   name="profile_picture" 
                                    accept="image/*"
                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                    onchange="previewImage(this)">
@@ -52,7 +52,7 @@
                             <p>SVG, PNG, JPG (max. 2MB)</p>
                         </div>
                     </div>
-                    @error('profile_icon')
+                    @error('profile_picture')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
