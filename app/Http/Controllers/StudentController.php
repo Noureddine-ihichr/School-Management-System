@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-
+use App\Models\Classe;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -11,8 +11,9 @@ class StudentController extends Controller
 
     public function index()
     {
-        $students = Student::with(['user', 'class'])->paginate(10);
-        return view('admin-section.students.index', compact('students'));
+        $students = Student::with(['user', 'classes'])->paginate(10);
+        $classes = Classe::all();
+        return view('admin-section.students.index', compact('students', 'classes'));
     }
 
 
@@ -116,7 +117,7 @@ public function update(Request $request, \App\Models\Student $student)
 
 public function show(Student $student)
 {
-    $student->load(['class.teachers']);
+    $student->load(['classes.teachers']);
     return view('admin-section.students.show', compact('student'));
 }
 
