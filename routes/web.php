@@ -57,9 +57,11 @@ Route::middleware('student')->group(function () {
 // Teacher Dashboard
 Route::middleware('teacher')->group(function () {
     Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard.teacher');
-    Route::get('/teacher/profile', [TeacherDashboardController::class, 'profile'])->name('teacher.profile');
-    Route::get('/teacher/classes', [TeacherDashboardController::class, 'classes'])->name('teacher.classes');
-    Route::get('/teacher/schedule', [TeacherDashboardController::class, 'schedule'])->name('teacher.schedule');
+    Route::get('/teacher/classes', [TeacherController::class, 'classesOverview'])->name('teacher.classes');
+    Route::get('/teacher/classes/{class}', [TeacherController::class, 'classDetails'])->name('teacher.classes.details');
+    Route::get('/teacher/profile', function () {
+        return view('teacher-section.profile.profile');
+    })->name('teacher.profile');
 });
 
 

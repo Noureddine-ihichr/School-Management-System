@@ -114,12 +114,11 @@ public function update(Request $request, $id)
         // Store directly in profile_pictures directory
         $admin->profile_picture = $request->file('profile_picture')->store('profile_pictures', 'public');
     }
-
     // Update the admin details
     $admin->update([
         'name' => $request->name,
         'email' => $request->email,
-        'profile_picture' => $admin->profile_picture,
+        'profile_picture' => $admin->profile_picture ?? null,
     ]);
 
     return redirect()->route('admin.management')->with('success', 'Admin updated successfully.');

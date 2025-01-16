@@ -140,4 +140,20 @@ class TeacherController extends Controller
 
         return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully!');
     }
+
+
+    public function classesOverview()
+    {
+        $classes = auth()->user()->teacher->classes()
+            ->withCount('students')
+            ->get();
+    
+        return view('teacher-section.classes.classes', compact('classes'));
+    }
+
+    public function profile()
+    {
+        return view('teacher-section.profile.profile');
+    }
+    
 }

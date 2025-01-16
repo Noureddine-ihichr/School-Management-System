@@ -13,14 +13,35 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,' . $user->id],
-            'current_password' => ['required_with:new_password', 'current_password'],
-            'new_password' => ['nullable', 'confirmed', Password::defaults()],
-        ]);
+        // Different validation rules based on user role
+        if ($user->role === 'teacher') {
+            $validated = $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+                'phone' => ['required', 'string', 'max:20'],
+                'current_password' => ['required_with:new_password', 'current_password'],
+                'new_password' => ['nullable', 'confirmed', Password::defaults()],
+            ]);
 
-        $user->name = $validated['name'];
+            // Update teacher profile
+            $user->teacher->update([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone_number' => $validated['phone'], // Changed 'phone' to 'phone_number' to match model
+            ]);
+        } else {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+                'current_password' => ['required_with:new_password', 'current_password'],
+                'new_password' => ['nullable', 'confirmed', Password::defaults()],
+            ]);
+
+            $user->name = $validated['name'];
+        }
+
+        // Update common fields
         $user->email = $validated['email'];
         
         if (isset($validated['new_password'])) {
@@ -59,7 +80,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'success' => false,
-            'message' => 'No file uploaded'
+            'message' => 'No profile picture provided'
         ], 400);
     }
-} 
+}

@@ -10,13 +10,15 @@ class TeacherDashboardController extends Controller
     // Show the teacher dashboard
     public function dashboard()
     {
-        // Get the authenticated user
-        $user = Auth::user();
+        $teacher = auth()->user()->teacher;
+        
+        $stats = [
+            'classes' => $teacher->classes()->count(),
+            'students' => $teacher->classes()->withCount('students')->get()->sum('students_count'),
+            'subjects' => $teacher->subjects()->count(),
+            'assignments' => 0, // You'll need to implement this once you have the assignments feature
+        ];
 
-        // Get the associated teacher
-        $teacher = $user->teacher;
-
-        // Pass the teacher data to the dashboard view
-        return view('dashboard.teacher', compact('teacher'));
+        return view('dashboard.teacher', compact('stats'));
     }
 }
