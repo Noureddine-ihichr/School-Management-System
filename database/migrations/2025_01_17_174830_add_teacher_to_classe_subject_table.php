@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTeacherToClasseSubjectTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
         Schema::table('classe_subject', function (Blueprint $table) {
-            $table->foreignId('teacher_id')->after('subject_id')->constrained('teachers')->onDelete('cascade');
-            // Make sure a subject is assigned only once per class-teacher combination
-            $table->unique(['classe_id', 'subject_id', 'teacher_id']);
+            $table->foreignId('teacher_id')->after('subject_id')->constrained('users')->onDelete('cascade');
         });
     }
 
@@ -22,4 +20,4 @@ class AddTeacherToClasseSubjectTable extends Migration
             $table->dropColumn('teacher_id');
         });
     }
-}
+};
