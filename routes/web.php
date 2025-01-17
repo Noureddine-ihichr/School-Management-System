@@ -55,14 +55,16 @@ Route::middleware('student')->group(function () {
 });
 
 // Teacher Dashboard
-Route::middleware('teacher')->group(function () {
+Route::middleware(['auth', 'teacher'])->group(function () {
     Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard.teacher');
     Route::get('/teacher/classes', [TeacherController::class, 'classesOverview'])->name('teacher.classes');
-    Route::get('/teacher/classes/{class}', [TeacherController::class, 'classDetails'])->name('teacher.classes.details');
+    Route::get('/teacher/classes/{class}', [ClassController::class, 'teacherClassDetails'])->name('teacher.classes.details'); // Keep only this
     Route::get('/teacher/profile', function () {
         return view('teacher-section.profile.profile');
     })->name('teacher.profile');
 });
+
+
 
 
 //

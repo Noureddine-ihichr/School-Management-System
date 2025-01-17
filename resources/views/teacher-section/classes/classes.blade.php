@@ -29,8 +29,7 @@
                         </div>
 
                         <!-- Action Button -->
-                        <a href="{{ route('teacher.classes.details', $class->id) }}" 
-                           class="block w-full px-4 py-2.5 bg-indigo-600 text-white text-center rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                        <a href="{{ route('teacher.classes.details', $class->id) }}" class="block w-full px-4 py-2.5 bg-indigo-600 text-white text-center rounded-lg hover:bg-indigo-700 transition-colors duration-200">
                             <i class="fas fa-eye mr-2"></i>View Details
                         </a>
                     </div>

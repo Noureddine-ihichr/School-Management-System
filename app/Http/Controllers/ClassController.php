@@ -31,25 +31,35 @@ class ClassController extends Controller
             'name' => 'required|string|max:255',
             'teachers' => 'nullable|array',
             'teachers.*' => 'exists:teachers,id',
+            'teacher_subjects' => 'nullable|array',
+            'teacher_subjects.*' => 'array',
             'students' => 'nullable|array',
-            'students.*' => 'exists:students,id',
+            'students.*' => 'exists:students,id'
         ]);
 
-        $classe = Classe::create([
+        $class = Classe::create([
             'name' => $request->name,
         ]);
 
-        // Attach teachers to the class
+        // Attach teachers and their subjects
         if ($request->has('teachers')) {
-            $classe->teachers()->attach($request->teachers);
+            $class->teachers()->attach($request->teachers);
+
+            // Attach subjects for each teacher
+            foreach ($request->teacher_subjects ?? [] as $teacherId => $subjectIds) {
+                foreach ($subjectIds as $subjectId) {
+                    $class->subjects()->attach($subjectId, ['teacher_id' => $teacherId]);
+                }
+            }
         }
 
         // Attach students to the class
         if ($request->has('students')) {
-            $classe->students()->attach($request->students);
+            $class->students()->attach($request->students);
         }
 
-        return redirect()->route('classes.index')->with('success', 'Class created successfully.');
+        return redirect()->route('classes.index')
+            ->with('success', 'Class created successfully.');
     }
 
     // Show form to edit a class
@@ -67,21 +77,29 @@ class ClassController extends Controller
             'name' => 'required|string|max:255',
             'teachers' => 'nullable|array',
             'teachers.*' => 'exists:teachers,id',
-            'students' => 'nullable|array',
-            'students.*' => 'exists:students,id',
+            'teacher_subjects' => 'nullable|array',
+            'teacher_subjects.*' => 'array'
         ]);
 
         $class->update([
             'name' => $request->name,
         ]);
 
-        // Sync teachers for the class - use empty array if no teachers selected
+        // Sync teachers
         $class->teachers()->sync($request->teachers ?? []);
 
-        // Sync students for the class - use empty array if no students selected
-        $class->students()->sync($request->students ?? []);
+        // Detach all existing subject-teacher relationships
+        $class->subjects()->detach();
 
-        return redirect()->route('classes.index')->with('success', 'Class updated successfully.');
+        // Attach new subject-teacher relationships
+        foreach ($request->teacher_subjects ?? [] as $teacherId => $subjectIds) {
+            foreach ($subjectIds as $subjectId) {
+                $class->subjects()->attach($subjectId, ['teacher_id' => $teacherId]);
+            }
+        }
+
+        return redirect()->route('classes.index')
+            ->with('success', 'Class updated successfully.');
     }
 
     // Delete a class
@@ -120,5 +138,29 @@ class ClassController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to remove student.');
         }
+    }
+
+    public function teacherClassDetails(Classe $class)
+    {
+        // Get the logged-in teacher
+        $teacher = auth()->user()->teacher;
+
+        // Load all necessary relationships
+        $class->load(['teachers', 'students', 'subjects']);
+
+        // Ensure the teacher is assigned to this class
+        if (!$class->teachers->contains($teacher)) {
+            abort(403, 'You are not assigned to this class.');
+        }
+
+        // Get paginated students
+        $students = $class->students()->paginate(7);
+        
+        // Get subjects taught by this teacher in this class
+        $subjects = $class->subjects()
+            ->wherePivot('teacher_id', $teacher->id)
+            ->get();
+
+        return view('teacher-section.classes.show', compact('class', 'subjects', 'students'));
     }
 }

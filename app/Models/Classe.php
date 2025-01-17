@@ -22,6 +22,15 @@ class Classe extends Model
 
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'classe_subject');
+        return $this->belongsToMany(Subject::class, 'classe_subject')
+                    ->withPivot('teacher_id');
+    }
+
+    public function subjectsWithTeachers()
+    {
+        return $this->belongsToMany(Subject::class, 'classe_subject')
+                    ->withPivot('teacher_id')
+                    ->join('teachers', 'classe_subject.teacher_id', '=', 'teachers.id')
+                    ->select('subjects.*', 'teachers.first_name', 'teachers.last_name');
     }
 }
