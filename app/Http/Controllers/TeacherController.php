@@ -65,8 +65,30 @@ class TeacherController extends Controller
     // Show the details of a specific teacher
     public function show(Teacher $teacher)
     {
-        $teacher->load(['subjects', 'classes']);
-        return view('admin-section.teachers.show', compact('teacher'));
+        $teacher->load(['user', 'subjects', 'classes']);
+        
+        // Get teacher's schedule slots
+        $scheduleSlots = \App\Models\ScheduleSlot::with(['schedule.class', 'subject'])
+            ->where('teacher_id', $teacher->id)
+            ->get()
+            ->groupBy('day');
+
+        // Define time slots
+        $timeSlots = [
+            '08:00' => '8h à 9h',
+            '09:00' => '9h à 10h',
+            '10:00' => '10h à 11h',
+            '11:00' => '11h à 12h',
+            '12:00' => '12h à 13h',
+            '13:00' => '13h à 14h',
+            '14:00' => '14h à 15h',
+            '15:00' => '15h à 16h',
+            '16:00' => '16h à 17h',
+            '17:00' => '17h à 18h'
+        ];
+
+        return view('admin-section.teachers.show', 
+            compact('teacher', 'scheduleSlots', 'timeSlots'));
     }
 
     // Show the form to edit a teacher

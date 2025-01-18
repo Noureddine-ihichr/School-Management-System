@@ -143,9 +143,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
+                    <a href="{{ route('schedules.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-indigo-50 group transition-colors duration-200">
                         <i class="fas fa-calendar-alt w-5 h-5 text-indigo-500 transition duration-75"></i>
-                        <span class="ml-3">Schedule</span>
+                        <span class="ml-3">Schedules</span>
                     </a>
                 </li>
                 <li>
